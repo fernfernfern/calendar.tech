@@ -13,7 +13,8 @@
   let location = "Event Location";
   let isReadOnly = false;
   let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  let notificationVisible = false; // Used to show/hide the copy notification
+  let localDateTime = "";
+  let notificationVisible = false;
 
   onMount(() => {
     const params = new URLSearchParams(window.location.search);
@@ -25,6 +26,10 @@
       description = params.get('description') || description;
       location = params.get('location') || location;
       timeZone = params.get('timezone') || timeZone;
+
+      // Convert to local date and time
+      const eventStart = new Date(`${date}T${time}`);
+      localDateTime = eventStart.toLocaleString(); // Format date and time to user's locale
     }
   });
 
@@ -98,7 +103,7 @@ END:VCALENDAR`;
       notificationVisible = true;
       setTimeout(() => {
         notificationVisible = false;
-      }, 2000); // Notification will disappear after 2 seconds
+      }, 2000);
     });
   }
 
@@ -115,6 +120,7 @@ END:VCALENDAR`;
       <h2>{title}</h2>
       <p><strong>Date:</strong> {date}</p>
       <p><strong>Time:</strong> {time} ({timeZone})</p>
+      <p><strong>Your Local Time:</strong> {localDateTime}</p> <!-- Display the local date and time -->
       <p><strong>Description:</strong> {description}</p>
       <p><strong>Location:</strong> {location}</p>
       <h2>Add to your Calendar</h2>
